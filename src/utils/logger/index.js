@@ -1,22 +1,26 @@
+
 const {createLogger, format, transports} = require('winston')
-const { stack } = require('../../routes')
-const {json, timestamp, combine, errors } = format
+require('winston-daily-rotate-file')
+const {json, timestamp, combine} = format
 
 
 
 const consoleTransport = new transports.Console({
     level : 'info',
-    format: combine(timestamp(), json(), errors({stack: true}))
+    format: combine(timestamp(), json())
 })
 
 // FileTransporter
 const fileTransporter = (level, filename) => {
 
-    return new transports.File({
-        level: level || "info",
-        format: combine(timestamp(), json()),
-        filename: filename || 'logs/info/info.log'
-    })
+    return new transports.DailyRotateFile({
+    level: level || 'info',
+    filename: `logs/${level}/application-${filename}-%DATE%.log`,
+    datePattern: 'YYYY-MM-DD-HH',
+    zippedArchive: true,
+    maxSize: '20m',
+    maxFiles: '14d'
+  })
 }
 
 
