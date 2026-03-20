@@ -1,0 +1,6 @@
+{"level":"info","message":"","timestamp":"2026-03-20T13:47:14.625Z"}
+{"level":"info","message":"server is running 4000","timestamp":"2026-03-20T13:47:14.628Z"}
+{"level":"error","message":"{\"message\":\"name and age is required\",\"status\":500}","timestamp":"2026-03-20T13:47:25.118Z"}
+{"level":"info","message":"","timestamp":"2026-03-20T13:47:48.043Z"}
+{"level":"info","message":"server is running 4000","timestamp":"2026-03-20T13:47:48.046Z"}
+{"level":"error","message":"{\"message\":\"name and age is required\",\"status\":500}","timestamp":"2026-03-20T13:47:52.591Z"}
