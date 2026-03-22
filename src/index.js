@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const userRouter = require("./routes")
 const logger = require('./utils/logger')
+const { expressWinstonInfoLogger, expressWinstonErrorLogger } = require('./middlewares/express-winston')
 
 
 // default 
@@ -9,14 +10,14 @@ const logger = require('./utils/logger')
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-
+app.use(expressWinstonInfoLogger)
 // Routers
-
 app.use(userRouter)
 
+app.use(expressWinstonErrorLogger)
 
 
-logger.info("")
+
 
 
 app.use((error, req, res, next)=>{
@@ -27,7 +28,6 @@ app.use((error, req, res, next)=>{
         status: error?.status || 500
     }
 
-    logger.error(JSON.stringify(errorObj))
 
     res.status(errorObj.status).json(errorObj)
 })

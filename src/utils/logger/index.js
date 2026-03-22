@@ -15,7 +15,7 @@ const fileTransporter = (level, filename) => {
 
     return new transports.DailyRotateFile({
     level: level || 'info',
-    filename: `logs/${level}/application-${filename}-%DATE%.log`,
+    filename: filename || `logs/${level}/application-${level}-%DATE%.log`,
     datePattern: 'YYYY-MM-DD-HH',
     zippedArchive: true,
     maxSize: '20m',
@@ -24,8 +24,8 @@ const fileTransporter = (level, filename) => {
 }
 
 
-const infoFileTransporter = fileTransporter('info', 'logs/info/info.log')
-const errorFileTransporter = fileTransporter('error', 'logs/error/error.log')
+const infoFileTransporter = fileTransporter('info')
+const errorFileTransporter = fileTransporter('error')
 
 const logger = createLogger({
     transports : [consoleTransport, infoFileTransporter, errorFileTransporter]
