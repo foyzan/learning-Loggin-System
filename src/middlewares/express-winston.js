@@ -1,33 +1,28 @@
 const expressWinston = require('express-winston');
 const logger = require('../utils/logger');
 
-// Standard Request Logger
-const expressWinstonInfoLogger = expressWinston.logger({
+const commonConfig = {
     winstonInstance: logger,
-    level: 'http',
-    meta: true,
-    msg: "HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms",
-    expressFormat: true,
-    colorize: false,
-    // ... your existing config
-    headerBlacklist: ['authorization', 'cookie', 'set-cookie'], // SCRUB THESE
+    headerBlacklist: ['authorization', 'cookie', 'set-cookie'],
     blacklistedBodyFields: ['password', 'confirmPassword', 'card_number'],
-
-    // Optional: reduce noise by selecting only what you need
     requestWhitelist: ['headers', 'method', 'url', 'body'],
+    // This ensures the ID is added to the JSON metadata of every log
+    dynamicMeta: (req, res) => ({
+        correlationId: req.correlationId
+    })
+};
+
+const expressWinstonInfoLogger = expressWinston.logger({
+    ...commonConfig,
+    level: 'http',
+    msg: "HTTP {{req.correlationId}} {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms",
+    expressFormat: false, // Set to false to use your custom 'msg' format above
 });
 
-// Dedicated Error Logger (Catches exceptions)
 const expressWinstonErrorLogger = expressWinston.errorLogger({
-    winstonInstance: logger,
-    dumpExceptions: true,
-    showStack: true,
-    // ... your existing config
-    headerBlacklist: ['authorization', 'cookie', 'set-cookie'], // SCRUB THESE
-    blacklistedBodyFields: ['password', 'confirmPassword', 'card_number'],
-
-    // Optional: reduce noise by selecting only what you need
-    requestWhitelist: ['headers', 'method', 'url', 'body'],
+    ...commonConfig,
+    // The errorLogger also needs to know how to display the ID in its message
+    msg: "ERROR {{req.correlationId}} {{req.method}} {{req.url}} - {{err.message}}"
 });
 
 module.exports = {
